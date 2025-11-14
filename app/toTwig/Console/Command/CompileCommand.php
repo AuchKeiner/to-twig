@@ -35,9 +35,10 @@ class CompileCommand extends Command
 	/**
 	 * @see Command
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
+	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$compiler = new Compiler();
 		$compiler->compile();
+		return 0;
 	}
 }

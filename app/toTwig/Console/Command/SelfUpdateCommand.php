@@ -42,7 +42,7 @@ EOT
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
+	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$remoteFilename = "https://raw.github.com/sankarsuda/toTwig/master/toTwig.phar";
 		$localFilename  = $_SERVER['argv'][0];
@@ -67,5 +67,6 @@ EOT
 		}
 
 		$output->writeln("<info>toTwig updated.</info>");
+		return 0;
 	}
 }

@@ -1,6 +1,19 @@
 PHP Smarty to Twig Converter
 ==========================
-toTwig is an utility to convert smarty template engine to twig template engine.
+toTwig is a utility to convert Smarty 5.x template engine to Twig 3.x template engine.
+
+## Requirements
+
+- PHP ^7.4 or ^8.0+
+- Symfony Components ^5.4, ^6.0, or ^7.0
+
+## Supported Features
+
+### Smarty 5.x Features
+- Ternary operator: `{$test ? $a : $b}` → `{{ test ? a : b }}`
+- Elvis operator: `{$var ?: $default}` → `{{ var ?: default }}`
+- Null coalescing operator: `{$var ?? $default}` → `{{ var ?? default }}`
+- All classic Smarty syntax conversions
 
 Installation
 ------------
@@ -73,6 +86,8 @@ Choose from the list of available converters:
  * **assign**   Convert smarty {assign} to twig {% set foo = 'foo' %}
 
  * **variable** Convert smarty variable {$var.name} to twig {{ var.name }}
+                Also supports Smarty 5.x ternary operator {$test ? $a : $b},
+                Elvis operator {$var ?: $default}, and null coalescing {$var ?? $default}
 
  * **comment**  Convert smarty comments {* *} to twig {# #}
 

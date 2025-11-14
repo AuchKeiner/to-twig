@@ -34,7 +34,7 @@ class ConvertCommand extends Command
 	 * @param Converter           $converter
 	 * @param ConfigInterface $config
 	 */
-	public function __construct(Converter $converter = null, ConfigInterface $config = null)
+	public function __construct(?Converter $converter = null, ?ConfigInterface $config = null)
 	{
 		$this->converter = $converter ?: new Converter();
 		$this->converter->registerBuiltInConverters();
@@ -125,7 +125,7 @@ EOF
 	/**
 	 * @see Command
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
+	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$path = $input->getArgument('path');
 		$filesystem = new Filesystem();
