@@ -31,7 +31,7 @@ class DefaultFinder extends Finder implements FinderInterface
             ->ignoreDotFiles(true)
             ->ignoreVCS(true)
             ->exclude('vendor')
-            ->filter(fn(\SplFileInfo $file): bool => !in_array($file->getRelativePathname(), $files))
+            ->filter(fn (\SplFileInfo $file): bool => !in_array($file->getRelativePathname(), $files))
         ;
     }
 

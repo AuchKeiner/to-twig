@@ -20,54 +20,56 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class SelfUpdateCommand extends Command
 {
-	/**
-	 * {@inheritdoc}
-	 */
-	protected function configure()
-	{
-		$this
-			->setName('self-update')
-			->setDescription('Update toTwig.phar to the latest version.')
-			->setHelp(<<<EOT
-The <info>self-update</info> command replace your toTwig.phar
-by the latest version from cs.sensiolabs.org.
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this
+            ->setName('self-update')
+            ->setDescription('Update toTwig.phar to the latest version.')
+            ->setHelp(
+                <<<EOT
+                    The <info>self-update</info> command replace your toTwig.phar
+                    by the latest version from cs.sensiolabs.org.
 
-<info>php toTwig.phar self-update</info>
+                    <info>php toTwig.phar self-update</info>
 
-EOT
-			)
-		;
-	}
+                    EOT
+            )
+        ;
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	protected function execute(InputInterface $input, OutputInterface $output): int
-	{
-		$remoteFilename = "https://raw.github.com/sankarsuda/toTwig/master/toTwig.phar";
-		$localFilename  = $_SERVER['argv'][0];
-		$tempFilename   = basename($localFilename, '.phar').'-temp.phar';
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $remoteFilename = 'https://raw.github.com/sankarsuda/toTwig/master/toTwig.phar';
+        $localFilename = $_SERVER['argv'][0];
+        $tempFilename = basename($localFilename, '.phar') . '-temp.phar';
 
-		try {
-			copy($remoteFilename, $tempFilename);
-			chmod($tempFilename, 0777 & ~umask());
+        try {
+            copy($remoteFilename, $tempFilename);
+            chmod($tempFilename, 0777 & ~umask());
 
-			// test the phar validity
-			$phar = new \Phar($tempFilename);
-			// free the variable to unlock the file
-			unset($phar);
-			rename($tempFilename, $localFilename);
-		} catch (\Exception $exception) {
-			if (!$exception instanceof \UnexpectedValueException && !$exception instanceof \PharException) {
-				throw $exception;
-			}
+            // test the phar validity
+            $phar = new \Phar($tempFilename);
+            // free the variable to unlock the file
+            unset($phar);
+            rename($tempFilename, $localFilename);
+        } catch (\Exception $exception) {
+            if (!$exception instanceof \UnexpectedValueException && !$exception instanceof \PharException) {
+                throw $exception;
+            }
 
-			unlink($tempFilename);
-			$output->writeln('<error>The download is corrupt ('.$exception->getMessage().').</error>');
-			$output->writeln('<error>Please re-run the self-update command to try again.</error>');
-		}
+            unlink($tempFilename);
+            $output->writeln('<error>The download is corrupt (' . $exception->getMessage() . ').</error>');
+            $output->writeln('<error>Please re-run the self-update command to try again.</error>');
+        }
 
-		$output->writeln("<info>toTwig updated.</info>");
-		return 0;
-	}
+        $output->writeln('<info>toTwig updated.</info>');
+
+        return 0;
+    }
 }

@@ -11,7 +11,6 @@
 
 namespace sankar\ST\Tests\Converter;
 
-use sankar\ST\Converter;
 use sankar\ST\Converter\VariableConverter;
 
 /**
@@ -30,32 +29,32 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
      * @covers sankar\ST\Converter\VariableConverter::convert
      * @dataProvider Provider
      */
-    public function testThatVariableIsConverted($smarty,$twig): void
+    public function testThatVariableIsConverted($smarty, $twig): void
     {
-        $this->assertSame($twig,
+        $this->assertSame(
+            $twig,
             $this->converter->convert($this->getFileMock(), $smarty)
         );
-
     }
 
     public function Provider()
     {
         return [
-                [ 
-                    '{$var}','{{ var }}'
+                [
+                    '{$var}', '{{ var }}',
                     ],
                 [
-                    '{$contacts.fax}','{{ contacts.fax }}'
+                    '{$contacts.fax}', '{{ contacts.fax }}',
                     ],
                 [
-                    '{$contacts[0]}','{{ contacts[0] }}'
+                    '{$contacts[0]}', '{{ contacts[0] }}',
                     ],
                 [
-                    '{$contacts[2][0]}','{{ contacts[2][0] }}'
+                    '{$contacts[2][0]}', '{{ contacts[2][0] }}',
                     ],
                 [
-                    '{$person->name}','{{ person.name }}'
-                    ]
+                    '{$person->name}', '{{ person.name }}',
+                    ],
             ];
     }
 

@@ -11,7 +11,6 @@
 
 namespace sankar\ST\Tests\Converter;
 
-use sankar\ST\Converter;
 use sankar\ST\Converter\AssignConverter;
 
 /**
@@ -30,35 +29,34 @@ class AssignConverterTest extends \PHPUnit_Framework_TestCase
      * @covers sankar\ST\Converter\AssignConverter::convert
      * @dataProvider Provider
      */
-    public function testThatAssignIsConverted($smarty,$twig): void
+    public function testThatAssignIsConverted($smarty, $twig): void
     {
-
         // Test the above cases
-        $this->assertSame($twig,
+        $this->assertSame(
+            $twig,
             $this->converter->convert($this->getFileMock(), $smarty)
         );
-
     }
 
     public function Provider()
     {
         return [
-                [ 
+                [
                         '{assign var="name" value="Bob"}',
-                        "{% set name = 'Bob' %}"
+                        "{% set name = 'Bob' %}",
                     ],
-                [ 
+                [
                         '{assign var="name" value=$bob}',
-                        '{% set name = bob %}'
-                    ],                
+                        '{% set name = bob %}',
+                    ],
                 [
                         '{assign "name" "Bob"}',
-                        "{% set name = 'Bob' %}"
+                        "{% set name = 'Bob' %}",
                     ],
-                [ 
+                [
                         '{assign var="foo" "bar" scope="global"}',
-                        "{% set foo = 'bar' %}"
-                    ]
+                        "{% set foo = 'bar' %}",
+                    ],
             ];
     }
 

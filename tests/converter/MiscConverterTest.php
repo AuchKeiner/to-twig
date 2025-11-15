@@ -11,7 +11,6 @@
 
 namespace sankar\ST\Tests\Converter;
 
-use sankar\ST\Converter;
 use sankar\ST\Converter\MiscConverter;
 
 /**
@@ -30,29 +29,29 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
      * @covers sankar\ST\Converter\MiscConverter::convert
      * @dataProvider Provider
      */
-    public function testThatMiscIsConverted($smarty,$twig): void
+    public function testThatMiscIsConverted($smarty, $twig): void
     {
-        $this->assertSame($twig,
+        $this->assertSame(
+            $twig,
             $this->converter->convert($this->getFileMock(), $smarty)
         );
-
     }
 
     public function Provider()
     {
         return [
-                [ 
-                    '{ldelim}',''
+                [
+                    '{ldelim}', '',
                     ],
                 [
-                    '{rdelim}',''
+                    '{rdelim}', '',
                     ],
                 [
-                    '{literal}','{# literal #}'
+                    '{literal}', '{# literal #}',
                     ],
                 [
-                    '{/literal}','{# /literal #}'
-                    ]
+                    '{/literal}', '{# /literal #}',
+                    ],
             ];
     }
 

@@ -11,7 +11,6 @@
 
 namespace sankar\ST\Tests\Converter;
 
-use sankar\ST\Converter;
 use sankar\ST\Converter\IncludeConverter;
 
 /**
@@ -30,14 +29,13 @@ class IncludeConverterTest extends \PHPUnit_Framework_TestCase
      * @covers sankar\ST\Converter\IncludeConverter::convert
      * @dataProvider Provider
      */
-    public function testThatIncludeIsConverted($smarty,$twig): void
+    public function testThatIncludeIsConverted($smarty, $twig): void
     {
-
         // Test the above cases
-        $this->assertSame($twig,
+        $this->assertSame(
+            $twig,
             $this->converter->convert($this->getFileMock(), $smarty)
         );
-
     }
 
     public function Provider()
@@ -45,12 +43,12 @@ class IncludeConverterTest extends \PHPUnit_Framework_TestCase
         return [
                 [
                         "{include file='page_header.tpl'}",
-                        "{% include 'page_header.tpl' %}"
+                        "{% include 'page_header.tpl' %}",
                     ],
                 [
                         '{include file=\'footer.tpl\' foo=\'bar\' links=$links}',
-                        "{% include 'footer.tpl' with {'foo' : 'bar', links : links} %}"
-                    ]
+                        "{% include 'footer.tpl' with {'foo' : 'bar', links : links} %}",
+                    ],
             ];
     }
 

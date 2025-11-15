@@ -18,63 +18,58 @@ use toTwig\ConverterAbstract;
  */
 class IncludeConverter extends ConverterAbstract
 {
+    public function convert(\SplFileInfo $file, $content)
+    {
+        return $this->replace($content);
+    }
 
-	public function convert(\SplFileInfo $file, $content)
-	{
-		return $this->replace($content);
-	}
+    public function getPriority(): int
+    {
+        return 100;
+    }
 
-	public function getPriority(): int
-	{
-		return 100;
-	}
+    public function getName(): string
+    {
+        return 'include';
+    }
 
-	public function getName(): string
-	{
-		return 'include';
-	}
+    public function getDescription(): string
+    {
+        return 'Convert smarty include to twig include';
+    }
 
-	public function getDescription(): string
-	{
-		return 'Convert smarty include to twig include';
-	}
+    private function replace($content)
+    {
+        $pattern = '/\{include\b\s*([^{}]+)?\}/';
+        $string = '{% include :template :with :vars %}';
 
-	private function replace($content)
-	{
-		$pattern = '/\{include\b\s*([^{}]+)?\}/';
-		$string = '{% include :template :with :vars %}';
+        return preg_replace_callback($pattern, function ($matches) use ($string): string {
+            $match = $matches[1];
+            $attr = $this->attributes($match);
 
-		return preg_replace_callback($pattern, function($matches) use ($string): string {
+            $replace = [];
+            $replace['template'] = $attr['file'];
 
-	        $match   = $matches[1];
-	        $attr    = $this->attributes($match);
+            // If we have any other variables
+            if (count($attr) > 1) {
+                $replace['with'] = 'with';
+                unset($attr['file']); // We won't need in vars
 
-	        $replace = [];
-	        $replace['template'] = $attr['file'];
+                $vars = [];
+                foreach ($attr as $key => $value) {
+                    $value = $this->value($value);
+                    $vars[] = "'" . $key . "' : " . $value;
+                }
 
-	        // If we have any other variables
-	        if (count($attr) > 1) {
-	            $replace['with'] = 'with';
-	            unset($attr['file']); // We won't need in vars
+                $replace['vars'] = '{' . implode(', ', $vars) . '}';
+            }
 
-	             $vars = [];
-	            foreach ($attr as $key => $value) {
-	            	$value  = $this->value($value);
-	                $vars[] = "'".$key."' : ".$value;
-	            }
+            $string = $this->vsprintf($string, $replace);
 
-	            $replace['vars'] = '{'.implode(', ',$vars).'}';
-	        }
+            // Replace more than one space to single space
+            $string = preg_replace('!\s+!', ' ', $string);
 
-	        $string  = $this->vsprintf($string,$replace);
-
-	        // Replace more than one space to single space
-	        $string = preg_replace('!\s+!', ' ', $string);
-
-	        return str_replace($matches[0], $string, $matches[0]);
-
-	      },$content);
-
-	}
-
+            return str_replace($matches[0], $string, $matches[0]);
+        }, $content);
+    }
 }

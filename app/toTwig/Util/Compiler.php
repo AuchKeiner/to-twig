@@ -33,7 +33,7 @@ class Compiler
 
         // CLI Component files
         foreach ($this->getFiles() as $file) {
-            $path = str_replace(__DIR__.'/', '', $file);
+            $path = str_replace(__DIR__ . '/', '', $file);
             $phar->addFromString($path, file_get_contents($file));
         }
 
