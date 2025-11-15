@@ -26,8 +26,8 @@ class IfConverter extends ConverterAbstract
             'ne'  => '!=',
             'not' => '!',
             'mod' => '%',
-            'or'  => '||',
-            'and' => '&&',
+            '||'  => 'or',
+            '&&'  => 'and',
     ];
 
     public function convert(\SplFileInfo $file, $content)

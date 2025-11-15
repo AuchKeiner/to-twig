@@ -11,12 +11,13 @@
 
 namespace sankar\ST\Tests\Converter;
 
-use sankar\ST\Converter\IfConverter;
+use PHPUnit\Framework\TestCase;
+use toTwig\Converter\IfConverter;
 
 /**
  * @author sankara <sankar.suda@gmail.com>
  */
-class IfConverterTest extends \PHPUnit_Framework_TestCase
+class IfConverterTest extends TestCase
 {
     protected $converter;
 
@@ -26,7 +27,7 @@ class IfConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers sankar\ST\Converter\IfConverter::convert
+     * @covers toTwig\Converter\IfConverter::convert
      * @dataProvider Provider
      */
     public function testThatIfIsConverted($smarty, $twig): void
@@ -38,7 +39,7 @@ class IfConverterTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function Provider()
+    public static function Provider()
     {
         return [
                 [
@@ -71,11 +72,31 @@ class IfConverterTest extends \PHPUnit_Framework_TestCase
                         '{if foo}\nbar\n{elseif (foo and bar) or foo and (bar or (foo and bar))}\nfoo{/if}',
                         '{% if foo %}\nbar\n{% elseif (foo and bar) or foo and (bar or (foo and bar)) %}\nfoo{% endif %}',
                     ],
+                [
+                        // Test logical operators: && should become and
+                        '{if foo && bar}\ntest\n{/if}',
+                        '{% if foo and bar %}\ntest\n{% endif %}',
+                    ],
+                [
+                        // Test logical operators: || should become or
+                        '{if foo || bar}\ntest\n{/if}',
+                        '{% if foo or bar %}\ntest\n{% endif %}',
+                    ],
+                [
+                        // Test mixed logical operators: && and || should become and and or
+                        '{if foo && bar || baz}\ntest\n{/if}',
+                        '{% if foo and bar or baz %}\ntest\n{% endif %}',
+                    ],
+                [
+                        // Test logical operators with parenthesis
+                        '{if (foo && bar) || (baz && qux)}\ntest\n{/if}',
+                        '{% if (foo and bar) or (baz and qux) %}\ntest\n{% endif %}',
+                    ],
             ];
     }
 
     /**
-     * @covers sankar\ST\Converter\IfConverter::getName
+     * @covers toTwig\Converter\IfConverter::getName
      */
     public function testThatHaveExpectedName(): void
     {
@@ -83,7 +104,7 @@ class IfConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers sankar\ST\Converter\IfConverter::getDescription
+     * @covers toTwig\Converter\IfConverter::getDescription
      */
     public function testThatHaveDescription(): void
     {
