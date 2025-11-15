@@ -169,9 +169,9 @@ EOF
 
 		$converters = array();
 		// remove/add converters based on the converters option
-		if (preg_match('{(^|,)-}', $input->getOption('converters'))) {
+		if (preg_match('{(^|,)-}', $input->getOption('converters') ?? '')) {
 			foreach ($converters as $key => $converter) {
-				if (preg_match('{(^|,)-'.preg_quote($converter->getName()).'}', $input->getOption('converters'))) {
+				if (preg_match('{(^|,)-'.preg_quote($converter->getName()).'}', $input->getOption('converters') ?? '')) {
 					unset($converters[$key]);
 				}
 			}
