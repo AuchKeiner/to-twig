@@ -38,7 +38,7 @@ class Application extends BaseApplication
 		$this->add(new SelfUpdateCommand());
 	}
 
-	public function getLongVersion()
+	public function getLongVersion(): string
 	{
 		return parent::getLongVersion().' by <comment>sankar</comment>';
 	}
