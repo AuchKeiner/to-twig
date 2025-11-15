@@ -34,7 +34,7 @@ class ReadmeCommand extends Command
 	/**
 	 * @see Command
 	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
+	protected function execute(InputInterface $input, OutputInterface $output): int
 	{
 		$header = <<<EOF
 PHP Smarty to Twig Converter
@@ -126,5 +126,6 @@ EOF;
 		$content .= $footer;
 
 		@file_put_contents('README.md', $content);
+		return 0;
 	}
 }

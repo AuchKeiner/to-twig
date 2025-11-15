@@ -110,7 +110,7 @@ abstract class ConverterAbstract
 	protected function value($string)
 	{
 		$string = trim(trim($string),"'");
-		$string = ($string{0} == '$') ? ltrim($string,'$') : "'".str_replace("'", "\'", $string)."'";
+		$string = ($string[0] == '$') ? ltrim($string,'$') : "'".str_replace("'", "\'", $string)."'";
 		$string = str_replace(array('"',"''"), "'", $string);
 
 		return $string;

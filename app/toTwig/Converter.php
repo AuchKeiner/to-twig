@@ -11,7 +11,8 @@
 
 namespace toTwig;
 
-use SebastianBergmann\Diff;
+use SebastianBergmann\Diff\Differ;
+use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo as FinderSplFileInfo;
 
@@ -23,12 +24,14 @@ class Converter
 	const VERSION = '0.1-DEV';
 
 	protected $converter = array();
+	protected $converters = array();
 	protected $configs = array();
 	protected $diff;
 
 	public function __construct()
 	{
-		$this->diff = new Diff();
+		$builder = new UnifiedDiffOutputBuilder('');
+		$this->diff = new Differ($builder);
 	}
 
 	public function registerBuiltInConverters()
