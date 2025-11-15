@@ -11,8 +11,6 @@
 
 namespace sankar\ST\Tests\Converter;
 
-use sankar\ST\Converter;
-use sankar\ST\ConverterAbstract;
 use sankar\ST\Converter\MiscConverter;
 
 /**
@@ -22,44 +20,45 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
 {
     protected $converter;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->converter = new MiscConverter();
     }
+
     /**
      * @covers sankar\ST\Converter\MiscConverter::convert
      * @dataProvider Provider
      */
-    public function testThatMiscIsConverted($smarty,$twig)
+    public function testThatMiscIsConverted($smarty, $twig): void
     {
-        $this->assertSame($twig,
+        $this->assertSame(
+            $twig,
             $this->converter->convert($this->getFileMock(), $smarty)
         );
-       
     }
 
     public function Provider()
     {
-        return array(
-                array( 
-                    '{ldelim}',''
-                    ),
-                array(
-                    '{rdelim}',''
-                    ),
-                array(
-                    '{literal}','{# literal #}'
-                    ),
-                array(
-                    '{/literal}','{# /literal #}'
-                    )
-            );
+        return [
+                [
+                    '{ldelim}', '',
+                    ],
+                [
+                    '{rdelim}', '',
+                    ],
+                [
+                    '{literal}', '{# literal #}',
+                    ],
+                [
+                    '{/literal}', '{# /literal #}',
+                    ],
+            ];
     }
 
     /**
      * @covers sankar\ST\Converter\Miscconverter::getName
      */
-    public function testThatHaveExpectedName()
+    public function testThatHaveExpectedName(): void
     {
         $this->assertEquals('misc', $this->converter->getName());
     }
@@ -67,7 +66,7 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers sankar\ST\Converter\Miscconverter::getDescription
      */
-    public function testThatHaveDescription()
+    public function testThatHaveDescription(): void
     {
         $this->assertNotEmpty($this->converter->getDescription());
     }

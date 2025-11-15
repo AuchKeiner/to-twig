@@ -20,7 +20,7 @@ use Symfony\Component\Finder\Finder;
  */
 class Compiler
 {
-    public function compile($pharFile = 'toTwig.phar')
+    public function compile($pharFile = 'toTwig.phar'): void
     {
         if (file_exists($pharFile)) {
             unlink($pharFile);
@@ -33,9 +33,10 @@ class Compiler
 
         // CLI Component files
         foreach ($this->getFiles() as $file) {
-            $path = str_replace(__DIR__.'/', '', $file);
+            $path = str_replace(__DIR__ . '/', '', $file);
             $phar->addFromString($path, file_get_contents($file));
         }
+
         $this->addStConverter($phar);
 
         // Stubs
@@ -63,12 +64,12 @@ class Compiler
         $phar->addFromString('toTwig', $content);
     }
 
-    protected function getStub()
+    protected function getStub(): string
     {
         return "#!/usr/bin/env php\n<?php Phar::mapPhar('toTwig.phar'); require 'phar://toTwig.phar/toTwig'; __HALT_COMPILER();";
     }
 
-    protected function getLicense()
+    protected function getLicense(): string
     {
         return '
     /**
@@ -81,10 +82,10 @@ class Compiler
      */';
     }
 
-    protected function getFiles()
+    protected function getFiles(): array
     {
-        $iterator = Finder::create()->files()->exclude('tests')->name('*.php')->in(array('vendor', 'lib'));
+        $iterator = Finder::create()->files()->exclude('tests')->name('*.php')->in(['vendor', 'lib']);
 
-        return array_merge(array('LICENSE'), iterator_to_array($iterator));
+        return array_merge(['LICENSE'], iterator_to_array($iterator));
     }
 }

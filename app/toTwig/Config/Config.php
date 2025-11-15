@@ -11,92 +11,95 @@
 
 namespace toTwig\Config;
 
-use toTwig\ConverterAbstract;
-use toTwig\FinderInterface;
 use toTwig\ConfigInterface;
+use toTwig\ConverterAbstract;
 use toTwig\Finder\DefaultFinder;
+use toTwig\FinderInterface;
 
 /**
  * @author sankara <sankar.suda@gmail.com>
  */
 class Config implements ConfigInterface
 {
-	protected $name;
-	protected $description;
-	protected $finder;
-	protected $converter;
-	protected $dir;
-	protected $customConverter;
+    protected $name;
 
-	public function __construct($name = 'default', $description = 'A default configuration')
-	{
-		$this->name = $name;
-		$this->description = $description;
-		$this->converter = ConverterAbstract::ALL_LEVEL;
-		$this->finder = new DefaultFinder();
-		$this->customConverter = array();
-	}
+    protected $description;
 
-	public static function create()
-	{
-		return new static();
-	}
+    protected $finder;
 
-	public function setDir($dir)
-	{
-		$this->dir = $dir;
-	}
+    protected $converter = ConverterAbstract::ALL_LEVEL;
 
-	public function getDir()
-	{
-		return $this->dir;
-	}
+    protected $dir;
 
-	public function finder(\Traversable $finder)
-	{
-		$this->finder = $finder;
+    protected $customConverter = [];
 
-		return $this;
-	}
+    public function __construct($name = 'default', $description = 'A default configuration')
+    {
+        $this->name = $name;
+        $this->description = $description;
+        $this->finder = new DefaultFinder();
+    }
 
-	public function getFinder()
-	{
-		if ($this->finder instanceof FinderInterface && $this->dir !== null) {
-			$this->finder->setDir($this->dir);
-		}
+    public static function create(): self
+    {
+        return new static();
+    }
 
-		return $this->finder;
-	}
+    public function setDir($dir): void
+    {
+        $this->dir = $dir;
+    }
 
-	public function converters($converter)
-	{
-		$this->converter = $converter;
+    public function getDir()
+    {
+        return $this->dir;
+    }
 
-		return $this;
-	}
+    public function finder(\Traversable $finder): self
+    {
+        $this->finder = $finder;
 
-	public function getConverters()
-	{
-		return $this->converter;
-	}
+        return $this;
+    }
 
-	public function getName()
-	{
-		return $this->name;
-	}
+    public function getFinder()
+    {
+        if ($this->finder instanceof FinderInterface && $this->dir !== null) {
+            $this->finder->setDir($this->dir);
+        }
 
-	public function getDescription()
-	{
-		return $this->description;
-	}
+        return $this->finder;
+    }
 
-	public function addCustomConverter(ConverterAbstract $converter)
-	{
-		$this->customConverter[] = $converter;
-	}
+    public function converters($converter): self
+    {
+        $this->converter = $converter;
 
-	public function getCustomConverters()
-	{
-		return $this->customConverter;
-	}
+        return $this;
+    }
+
+    public function getConverters()
+    {
+        return $this->converter;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function addCustomConverter(ConverterAbstract $converter): void
+    {
+        $this->customConverter[] = $converter;
+    }
+
+    public function getCustomConverters()
+    {
+        return $this->customConverter;
+    }
 }

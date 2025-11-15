@@ -31,34 +31,28 @@ class DefaultFinder extends Finder implements FinderInterface
             ->ignoreDotFiles(true)
             ->ignoreVCS(true)
             ->exclude('vendor')
-            ->filter(function (\SplFileInfo $file) use ($files) {
-                return !in_array($file->getRelativePathname(), $files);
-            })
+            ->filter(fn (\SplFileInfo $file): bool => !in_array($file->getRelativePathname(), $files))
         ;
     }
 
-    public function setDir($dir)
+    public function setDir($dir): void
     {
         $this->in($this->getDirs($dir));
     }
 
     /**
      * Gets the directories that needs to be scanned for files to validate.
-     *
-     * @return array
      */
-    protected function getDirs($dir)
+    protected function getDirs($dir): array
     {
-        return array($dir);
+        return [$dir];
     }
 
     /**
      * Excludes files because modifying them would break (mainly useful for fixtures in unit tests).
-     *
-     * @return array
      */
-    protected function getFilesToExclude()
+    protected function getFilesToExclude(): array
     {
-        return array();
+        return [];
     }
 }

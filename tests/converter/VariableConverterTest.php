@@ -11,8 +11,6 @@
 
 namespace sankar\ST\Tests\Converter;
 
-use sankar\ST\Converter;
-use sankar\ST\ConverterAbstract;
 use sankar\ST\Converter\VariableConverter;
 
 /**
@@ -22,47 +20,48 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
 {
     protected $converter;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->converter = new VariableConverter();
     }
+
     /**
      * @covers sankar\ST\Converter\VariableConverter::convert
      * @dataProvider Provider
      */
-    public function testThatVariableIsConverted($smarty,$twig)
+    public function testThatVariableIsConverted($smarty, $twig): void
     {
-        $this->assertSame($twig,
+        $this->assertSame(
+            $twig,
             $this->converter->convert($this->getFileMock(), $smarty)
         );
-       
     }
 
     public function Provider()
     {
-        return array(
-                array( 
-                    '{$var}','{{ var }}'
-                    ),
-                array(
-                    '{$contacts.fax}','{{ contacts.fax }}'
-                    ),
-                array(
-                    '{$contacts[0]}','{{ contacts[0] }}'
-                    ),
-                array(
-                    '{$contacts[2][0]}','{{ contacts[2][0] }}'
-                    ),
-                array(
-                    '{$person->name}','{{ person.name }}'
-                    )
-            );
+        return [
+                [
+                    '{$var}', '{{ var }}',
+                    ],
+                [
+                    '{$contacts.fax}', '{{ contacts.fax }}',
+                    ],
+                [
+                    '{$contacts[0]}', '{{ contacts[0] }}',
+                    ],
+                [
+                    '{$contacts[2][0]}', '{{ contacts[2][0] }}',
+                    ],
+                [
+                    '{$person->name}', '{{ person.name }}',
+                    ],
+            ];
     }
 
     /**
      * @covers sankar\ST\Converter\Variableconverter::getName
      */
-    public function testThatHaveExpectedName()
+    public function testThatHaveExpectedName(): void
     {
         $this->assertEquals('variable', $this->converter->getName());
     }
@@ -70,7 +69,7 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers sankar\ST\Converter\Variableconverter::getDescription
      */
-    public function testThatHaveDescription()
+    public function testThatHaveDescription(): void
     {
         $this->assertNotEmpty($this->converter->getDescription());
     }

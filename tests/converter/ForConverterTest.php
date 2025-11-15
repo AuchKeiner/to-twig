@@ -11,8 +11,6 @@
 
 namespace sankar\ST\Tests\Converter;
 
-use sankar\ST\Converter;
-use sankar\ST\ConverterAbstract;
 use sankar\ST\Converter\ForConverter;
 
 /**
@@ -22,50 +20,50 @@ class ForConverterTest extends \PHPUnit_Framework_TestCase
 {
     protected $converter;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->converter = new ForConverter();
     }
+
     /**
      * @covers sankar\ST\Converter\ForConverter::convert
      * @dataProvider Provider
      */
-    public function testThatForIsConverted($smarty,$twig)
+    public function testThatForIsConverted($smarty, $twig): void
     {
-
         // Test the above cases
-        $this->assertSame($twig,
+        $this->assertSame(
+            $twig,
             $this->converter->convert($this->getFileMock(), $smarty)
         );
-       
     }
 
     public function Provider()
     {
-        return array(
-                array( 
+        return [
+                [
                         '{foreach $myColors as $color}\nfoo{/foreach}',
-                        '{% for color in myColors %}\nfoo\n{% endfor %}'
-                    ),
-                array(
+                        '{% for color in myColors %}\nfoo\n{% endfor %}',
+                    ],
+                [
                         '{foreach $contact as $key => $value}\nfoo{/foreach}',
-                        '{% for key,value in contact %}\nfoo{% endfor %}'
-                    ),
-                array( 
+                        '{% for key,value in contact %}\nfoo{% endfor %}',
+                    ],
+                [
                         '{foreach name=outer item=contact from=$contacts}\nfoo{/foreach}',
-                        '{% for contact in contacts %}\nfoo{% endfor %}'
-                    ), 
-                array(
+                        '{% for contact in contacts %}\nfoo{% endfor %}',
+                    ],
+                [
                         '{foreach key=key item=item from=$contact}\nfoo\n{foreachelse}bar{/foreach}',
-                        '{% for key,item in contact %}\nfoo\n{% else %}bar{% endfor %}'
-                    ),
-            );
+                        '{% for key,item in contact %}\nfoo\n{% else %}bar{% endfor %}',
+                    ],
+            ];
     }
 
     /**
      * @covers sankar\ST\Converter\ForConverter::getName
      */
-    public function testThatHaveExpectedName()
+    public function testThatHaveExpectedName(): void
     {
         $this->assertEquals('for', $this->converter->getName());
     }
@@ -73,7 +71,7 @@ class ForConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers sankar\ST\Converter\ForConverter::getDescription
      */
-    public function testThatHaveDescription()
+    public function testThatHaveDescription(): void
     {
         $this->assertNotEmpty($this->converter->getDescription());
     }

@@ -20,112 +20,113 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ReadmeCommand extends Command
 {
-	/**
-	 * @see Command
-	 */
-	protected function configure()
-	{
-		$this
-			->setName('readme')
-			->setDescription('Generates the README content, based on the convert command help')
-		;
-	}
+    /**
+     * @see Command
+     */
+    protected function configure()
+    {
+        $this
+            ->setName('readme')
+            ->setDescription('Generates the README content, based on the convert command help')
+        ;
+    }
 
-	/**
-	 * @see Command
-	 */
-	protected function execute(InputInterface $input, OutputInterface $output): int
-	{
-		$header = <<<EOF
-PHP Smarty to Twig Converter
-==========================
-toTwig is an utility to convert smarty template engine to twig template engine.
+    /**
+     * @see Command
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $header = <<<EOF
+            PHP Smarty to Twig Converter
+            ==========================
+            toTwig is an utility to convert smarty template engine to twig template engine.
 
-Installation
-------------
+            Installation
+            ------------
 
-### Locally
+            ### Locally
 
-Download the
-[`toTwig.phar`](https://raw.github.com/sankarsuda/toTwig/master/toTwig.phar) file and
-store it somewhere on your computer.
+            Download the
+            [`toTwig.phar`](https://raw.github.com/sankarsuda/toTwig/master/toTwig.phar) file and
+            store it somewhere on your computer.
 
-### Globally (manual)
+            ### Globally (manual)
 
-You can run these commands to easily acces `toTwig` from anywhere on your system:
+            You can run these commands to easily acces `toTwig` from anywhere on your system:
 
-	\$ sudo wget https://raw.github.com/sankarsuda/toTwig/master/toTwig.phar -O /usr/local/bin/toTwig
+            	\$ sudo wget https://raw.github.com/sankarsuda/toTwig/master/toTwig.phar -O /usr/local/bin/toTwig
 
-or with curl:
+            or with curl:
 
-	\$ sudo curl https://raw.github.com/sankarsuda/toTwig/master/toTwig.phar -o /usr/local/bin/toTwig
+            	\$ sudo curl https://raw.github.com/sankarsuda/toTwig/master/toTwig.phar -o /usr/local/bin/toTwig
 
-then:
+            then:
 
-	\$ sudo chmod a+x /usr/local/bin/toTwig
+            	\$ sudo chmod a+x /usr/local/bin/toTwig
 
-Then, just run `toTwig`
+            Then, just run `toTwig`
 
-Update
-------
+            Update
+            ------
 
-### Locally
+            ### Locally
 
-The `self-update` command tries to update toTwig itself:
+            The `self-update` command tries to update toTwig itself:
 
-	\$ php toTwig.phar self-update
+            	\$ php toTwig.phar self-update
 
-### Globally (manual)
+            ### Globally (manual)
 
-You can update toTwig through this command:
+            You can update toTwig through this command:
 
-	\$ sudo toTwig self-update
+            	\$ sudo toTwig self-update
 
-Usage
------
+            Usage
+            -----
 
-EOF;
+            EOF;
 
-		$footer = <<<EOF
+        $footer = <<<EOF
 
-Contribute
-----------
+            Contribute
+            ----------
 
-The tool comes with quite a few built-in converters and finders, but everyone is
-more than welcome to [contribute](https://github.com/sankarsuda/toTwig) more
-of them.
+            The tool comes with quite a few built-in converters and finders, but everyone is
+            more than welcome to [contribute](https://github.com/sankarsuda/toTwig) more
+            of them.
 
-### Converter
+            ### Converter
 
-A *converter* is a class that tries to convert one tag (a `Converter` class must
-extends `ConverterAbstract`).
+            A *converter* is a class that tries to convert one tag (a `Converter` class must
+            extends `ConverterAbstract`).
 
-### Configs
+            ### Configs
 
-A *config* knows about the files and directories that must be
-scanned by the tool when run in the directory of your project. It is useful
-for projects that follow a well-known directory structures (like for Symfony
-projects for instance).
+            A *config* knows about the files and directories that must be
+            scanned by the tool when run in the directory of your project. It is useful
+            for projects that follow a well-known directory structures (like for Symfony
+            projects for instance).
 
-EOF;
+            EOF;
 
-		$command = $this->getApplication()->get('convert');
-		$help = $command->getHelp();
-		$help = str_replace('%command.full_name%', 'toTwig.phar '.$command->getName(), $help);
-		$help = str_replace('%command.name%', $command->getName(), $help);
-		$help = preg_replace('#</?(comment|info)>#', '`', $help);
-		$help = preg_replace('#^(\s+)`(.+)`$#m', '$1$2', $help);
-		$help = preg_replace('#^ \* `(.+)`#m', ' * **$1**', $help);
+        $command = $this->getApplication()->get('convert');
+        $help = $command->getHelp();
+        $help = str_replace('%command.full_name%', 'toTwig.phar ' . $command->getName(), $help);
+        $help = str_replace('%command.name%', $command->getName(), $help);
+        $help = preg_replace('#</?(comment|info)>#', '`', $help);
+        $help = preg_replace('#^(\s+)`(.+)`$#m', '$1$2', $help);
+        $help = preg_replace('#^ \* `(.+)`#m', ' * **$1**', $help);
 
-		$output->writeln($header);
-		$output->writeln($help);
-		$output->write($footer);
+        $output->writeln($header);
+        $output->writeln($help);
+        $output->write($footer);
 
-		$content = $header."\n";
-		$content .= $help ."\n";
-		$content .= $footer;
+        $content = $header . "\n";
+        $content .= $help . "\n";
+        $content .= $footer;
 
-		@file_put_contents('README.md', $content);
-		return 0;
-	}
+        @file_put_contents('README.md', $content);
+
+        return 0;
+    }
 }
