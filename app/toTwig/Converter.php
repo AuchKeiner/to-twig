@@ -23,10 +23,13 @@ class Converter
 {
 	const VERSION = '0.1-DEV';
 
-	protected $converter = array();
-	protected $converters = array();
-	protected $configs = array();
-	protected $diff;
+	protected $converter = [];
+
+	protected $converters = [];
+
+	protected $configs = [];
+
+	protected Differ $diff;
 
 	public function __construct()
 	{
@@ -34,7 +37,7 @@ class Converter
 		$this->diff = new Differ($builder);
 	}
 
-	public function registerBuiltInConverters()
+	public function registerBuiltInConverters(): void
 	{
 		foreach (Finder::create()->files()->in(__DIR__.'/Converter') as $file) {
 			$class = 'toTwig\\Converter\\'.basename($file, '.php');
@@ -42,14 +45,14 @@ class Converter
 		}
 	}
 
-	public function registerCustomConverters($converter)
+	public function registerCustomConverters($converter): void
 	{
 		foreach ($converter as $convert) {
 			$this->addConverter($convert);
 		}
 	}
 
-	public function addConverter(ConverterAbstract $convert)
+	public function addConverter(ConverterAbstract $convert): void
 	{
 		$this->converters[] = $convert;
 	}
@@ -61,7 +64,7 @@ class Converter
 		return $this->converters;
 	}
 
-	public function registerBuiltInConfigs()
+	public function registerBuiltInConfigs(): void
 	{
 		foreach (Finder::create()->files()->in(__DIR__.'/Config') as $file) {
 			$class = 'toTwig\\Config\\'.basename($file, '.php');
@@ -69,7 +72,7 @@ class Converter
 		}
 	}
 
-	public function addConfig(ConfigInterface $config)
+	public function addConfig(ConfigInterface $config): void
 	{
 		$this->configs[] = $config;
 	}
@@ -80,18 +83,19 @@ class Converter
 	}
 
 	/**
-	 * Fixes all files for the given finder.
-	 *
-	 * @param ConfigInterface $config A ConfigInterface instance
-	 * @param Boolean         $dryRun Whether to simulate the changes or not
-	 * @param Boolean         $diff   Whether to provide diff
-	 */
-	public function convert(ConfigInterface $config, $dryRun = false, $diff = false, $outputExt='')
+     * Fixes all files for the given finder.
+     *
+     * @param ConfigInterface $config A ConfigInterface instance
+     * @param Boolean         $dryRun Whether to simulate the changes or not
+     * @param Boolean         $diff   Whether to provide diff
+     * @return mixed[]
+     */
+    public function convert(ConfigInterface $config, $dryRun = false, $diff = false, $outputExt=''): array
 	{
 		$this->sortConverters();
 
 		$converter = $this->prepareConverters($config);
-		$changed = array();
+		$changed = [];
 		foreach ($config->getFinder() as $file) {
 			if ($file->isDir()) {
 				continue;
@@ -109,10 +113,11 @@ class Converter
 		return $changed;
 	}
 
-	public function conVertFile(\SplFileInfo $file, array $converter, $dryRun, $diff, $outputExt)
+	public function conVertFile(\SplFileInfo $file, array $converter, $dryRun, $diff, $outputExt): ?array
 	{
-		$new = $old = file_get_contents($file->getRealpath());
-		$appliedConverters = array();
+		$new = file_get_contents($file->getRealpath());
+        $old = $new;
+        $appliedConverters = [];
 
 		foreach ($converter as $convert) {
 			if (!$convert->supports($file)) {
@@ -123,12 +128,13 @@ class Converter
 			if ($new1 != $new) {
 				$appliedConverters[] = $convert->getName();
 			}
+
 			$new = $new1;
 		}
 
 		if ($new != $old) {
 			if (!$dryRun) {
-				
+
 				$filename = $file->getRealpath();
 
 				$ext = strrchr($filename, '.');
@@ -139,7 +145,7 @@ class Converter
 				file_put_contents($filename, $new);
 			}
 
-			$fixInfo = array('appliedConverters' => $appliedConverters);
+			$fixInfo = ['appliedConverters' => $appliedConverters];
 
 			if ($diff) {
 				$fixInfo['diff'] = $this->stringDiff($old, $new);
@@ -147,36 +153,27 @@ class Converter
 
 			return $fixInfo;
 		}
+        return null;
 	}
 
-	protected function stringDiff($old, $new)
+	protected function stringDiff($old, $new): string
 	{
 		$diff = $this->diff->diff($old, $new);
 
-		$diff = implode(PHP_EOL, array_map(function ($string) {
+		return implode(PHP_EOL, array_map(function ($string) {
 			$string = preg_replace('/^(\+){3}/', '<info>+++</info>', $string);
 			$string = preg_replace('/^(\+){1}/', '<info>+</info>', $string);
 
 			$string = preg_replace('/^(\-){3}/', '<error>---</error>', $string);
 			$string = preg_replace('/^(\-){1}/', '<error>-</error>', $string);
 
-			$string = str_repeat(' ', 6) . $string;
-
-			return $string;
+			return str_repeat(' ', 6) . $string;
 		}, explode(PHP_EOL, $diff)));
-
-		return $diff;
 	}
 
-	private function sortConverters()
+	private function sortConverters(): void
 	{
-		usort($this->converters, function ($a, $b) {
-			if ($a->getPriority() == $b->getPriority()) {
-				return 0;
-			}
-
-			return $a->getPriority() > $b->getPriority() ? -1 : 1;
-		});
+		usort($this->converters, fn($a, $b): int => $b->getPriority() <=> $a->getPriority());
 	}
 
 	private function prepareConverters(ConfigInterface $config)

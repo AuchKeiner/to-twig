@@ -12,7 +12,6 @@
 namespace sankar\ST\Tests\Converter;
 
 use sankar\ST\Converter;
-use sankar\ST\ConverterAbstract;
 use sankar\ST\Converter\AssignConverter;
 
 /**
@@ -22,50 +21,51 @@ class AssignConverterTest extends \PHPUnit_Framework_TestCase
 {
     protected $converter;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->converter = new AssignConverter();
     }
+
     /**
      * @covers sankar\ST\Converter\AssignConverter::convert
      * @dataProvider Provider
      */
-    public function testThatAssignIsConverted($smarty,$twig)
+    public function testThatAssignIsConverted($smarty,$twig): void
     {
 
         // Test the above cases
         $this->assertSame($twig,
             $this->converter->convert($this->getFileMock(), $smarty)
         );
-       
+
     }
 
     public function Provider()
     {
-        return array(
-                array( 
+        return [
+                [ 
                         '{assign var="name" value="Bob"}',
-                        '{% set name = \'Bob\' %}'
-                    ),
-                array( 
+                        "{% set name = 'Bob' %}"
+                    ],
+                [ 
                         '{assign var="name" value=$bob}',
                         '{% set name = bob %}'
-                    ),                
-                array(
+                    ],                
+                [
                         '{assign "name" "Bob"}',
-                        '{% set name = \'Bob\' %}'
-                    ),
-                array( 
+                        "{% set name = 'Bob' %}"
+                    ],
+                [ 
                         '{assign var="foo" "bar" scope="global"}',
-                        '{% set foo = \'bar\' %}'
-                    )
-            );
+                        "{% set foo = 'bar' %}"
+                    ]
+            ];
     }
 
     /**
      * @covers sankar\ST\Converter\AssignConverter::getName
      */
-    public function testThatHaveExpectedName()
+    public function testThatHaveExpectedName(): void
     {
         $this->assertEquals('assign', $this->converter->getName());
     }
@@ -73,7 +73,7 @@ class AssignConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers sankar\ST\Converter\AssignConverter::getDescription
      */
-    public function testThatHaveDescription()
+    public function testThatHaveDescription(): void
     {
         $this->assertNotEmpty($this->converter->getDescription());
     }

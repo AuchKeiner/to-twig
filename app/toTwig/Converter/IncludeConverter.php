@@ -24,17 +24,17 @@ class IncludeConverter extends ConverterAbstract
 		return $this->replace($content);
 	}
 
-	public function getPriority()
+	public function getPriority(): int
 	{
 		return 100;
 	}
 
-	public function getName()
+	public function getName(): string
 	{
 		return 'include';
 	}
 
-	public function getDescription()
+	public function getDescription(): string
 	{
 		return 'Convert smarty include to twig include';
 	}
@@ -44,12 +44,12 @@ class IncludeConverter extends ConverterAbstract
 		$pattern = '/\{include\b\s*([^{}]+)?\}/';
 		$string = '{% include :template :with :vars %}';
 
-		return preg_replace_callback($pattern, function($matches) use ($string) {
+		return preg_replace_callback($pattern, function($matches) use ($string): string {
 
 	        $match   = $matches[1];
 	        $attr    = $this->attributes($match);
 
-	        $replace = array();
+	        $replace = [];
 	        $replace['template'] = $attr['file'];
 
 	        // If we have any other variables
@@ -57,7 +57,7 @@ class IncludeConverter extends ConverterAbstract
 	            $replace['with'] = 'with';
 	            unset($attr['file']); // We won't need in vars
 
-	             $vars = array();
+	             $vars = [];
 	            foreach ($attr as $key => $value) {
 	            	$value  = $this->value($value);
 	                $vars[] = "'".$key."' : ".$value;

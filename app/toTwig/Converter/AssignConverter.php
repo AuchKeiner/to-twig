@@ -21,22 +21,20 @@ class AssignConverter extends ConverterAbstract
 
 	public function convert(\SplFileInfo $file, $content)
 	{
-		$content = $this->replace($content);
-
-		return $content;
+		return $this->replace($content);
 	}
 
-	public function getPriority()
+	public function getPriority(): int
 	{
 		return 100;
 	}
 
-	public function getName()
+	public function getName(): string
 	{
 		return 'assign';
 	}
 
-	public function getDescription()
+	public function getDescription(): string
 	{
 		return "Convert smarty {assign} to twig {% set foo = 'foo' %}";
 	}
@@ -46,7 +44,7 @@ class AssignConverter extends ConverterAbstract
 		$pattern = '/\{assign\b\s*([^{}]+)?\}/';
 		$string  = '{% set :key = :value %}';
 
-		return preg_replace_callback($pattern, function($matches) use ($string) {
+		return preg_replace_callback($pattern, function($matches) use ($string): string {
 
 	        $match   = $matches[1];
 	        $attr    = $this->attributes($match);
@@ -56,8 +54,7 @@ class AssignConverter extends ConverterAbstract
 
 	        // Short-hand {assign "name" "Bob"}
 	        if (!isset($key)) {
-	            reset($attr);
-	            $key = key($attr);
+	            $key = array_key_first($attr);
 	        }
 
 	        if (!isset($value)) {
@@ -68,7 +65,7 @@ class AssignConverter extends ConverterAbstract
 	        $value = $this->value($value);
 	        $key   = $this->variable($key);
 
-	        $string  = $this->vsprintf($string,array('key'=>$key,'value'=>$value));
+	        $string  = $this->vsprintf($string,['key'=>$key,'value'=>$value]);
 	        // Replace more than one space to single space
 	        $string = preg_replace('!\s+!', ' ', $string);	 
 	               

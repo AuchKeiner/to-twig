@@ -20,10 +20,10 @@ class ForConverter extends ConverterAbstract
 {
 	// Lookup tables for performing some token
 	// replacements not addressed in the grammar.
-	private $replacements = array(
+	private array $replacements = [
 		'smarty\.foreach.*\.index' => 'loop.index0',
 		'smarty\.foreach.*\.iteration' => 'loop.index'
-	);
+	];
 
 	public function convert(\SplFileInfo $file, $content)
 	{
@@ -38,17 +38,17 @@ class ForConverter extends ConverterAbstract
 		return $content;
 	}
 
-	public function getPriority()
+	public function getPriority(): int
 	{
 		return 50;
 	}
 
-	public function getName()
+	public function getName(): string
 	{
 		return 'for';
 	}
 
-	public function getDescription()
+	public function getDescription(): string
 	{
 		return 'Convert foreach/foreachelse to twig';
 	}
@@ -73,11 +73,11 @@ class ForConverter extends ConverterAbstract
 		$pattern = "#\{foreach\b\s*([^{}]+)?\}#i";
 		$string  = '{% for :key :item in :from %}';
 
-		return preg_replace_callback($pattern, function($matches) use( $string ) {
+		return preg_replace_callback($pattern, function($matches) use( $string ): string {
 
 			$match   = $matches[1];
 			$search  = $matches[0];
-			$replace = array();
+			$replace = [];
 
 			// {foreach $users as $user}
 			if (preg_match("/(.*)(?:as)(.*)/i", $match,$mcs)) {
@@ -86,7 +86,8 @@ class ForConverter extends ConverterAbstract
 				if (preg_match("/(.*)\=\>(.*)/", $mcs[2],$match)) {
 					$replace['key'] .= $this->variable($match[1]).',';
 					$mcs[2] = $match[2];
-				} 
+				}
+
 				$replace['item'] = $this->variable($mcs[2]);
 				$replace['from'] = $this->variable($mcs[1]);
 

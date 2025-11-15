@@ -22,27 +22,30 @@ use toTwig\Finder\DefaultFinder;
 class Config implements ConfigInterface
 {
 	protected $name;
+
 	protected $description;
+
 	protected $finder;
-	protected $converter;
+
+	protected $converter = ConverterAbstract::ALL_LEVEL;
+
 	protected $dir;
-	protected $customConverter;
+
+	protected $customConverter = [];
 
 	public function __construct($name = 'default', $description = 'A default configuration')
 	{
 		$this->name = $name;
 		$this->description = $description;
-		$this->converter = ConverterAbstract::ALL_LEVEL;
 		$this->finder = new DefaultFinder();
-		$this->customConverter = array();
 	}
 
-	public static function create()
+	public static function create(): self
 	{
 		return new static();
 	}
 
-	public function setDir($dir)
+	public function setDir($dir): void
 	{
 		$this->dir = $dir;
 	}
@@ -52,7 +55,7 @@ class Config implements ConfigInterface
 		return $this->dir;
 	}
 
-	public function finder(\Traversable $finder)
+	public function finder(\Traversable $finder): self
 	{
 		$this->finder = $finder;
 
@@ -68,7 +71,7 @@ class Config implements ConfigInterface
 		return $this->finder;
 	}
 
-	public function converters($converter)
+	public function converters($converter): self
 	{
 		$this->converter = $converter;
 
@@ -90,7 +93,7 @@ class Config implements ConfigInterface
 		return $this->description;
 	}
 
-	public function addCustomConverter(ConverterAbstract $converter)
+	public function addCustomConverter(ConverterAbstract $converter): void
 	{
 		$this->customConverter[] = $converter;
 	}

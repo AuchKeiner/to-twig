@@ -21,12 +21,12 @@ class MiscConverter extends ConverterAbstract
 
 	// Lookup tables for performing some token
 	// replacements not addressed in the grammar.
-	private $replacements = array(
+	private array $replacements = [
 		'\{ldelim\}' => '',
 		'\{rdelim\}' => '',
 		'\{literal\}' => '{# literal #}',
 		'\{\\/literal\}' => '{# /literal #}'
-	);
+	];
 
 	public function convert(\SplFileInfo $file, $content)
 	{
@@ -37,17 +37,17 @@ class MiscConverter extends ConverterAbstract
 		return $content;
 	}
 
-	public function getPriority()
+	public function getPriority(): int
 	{
 		return 52;
 	}
 
-	public function getName()
+	public function getName(): string
 	{
 		return 'misc';
 	}
 
-	public function getDescription()
+	public function getDescription(): string
 	{
 		return 'Convert smarty general tags like {ldelim} {rdelim} {literal}';
 	}

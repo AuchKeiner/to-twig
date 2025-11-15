@@ -33,17 +33,17 @@ class VariableConverter extends ConverterAbstract
 		return $content;
 	}
 
-	public function getPriority()
+	public function getPriority(): int
 	{
 		return 100;
 	}
 
-	public function getName()
+	public function getName(): string
 	{
 		return 'variable';
 	}
 
-	public function getDescription()
+	public function getDescription(): string
 	{
 		return 'Convert smarty variable {$var.name} to twig {{ var.name }}';
 	}
@@ -59,9 +59,7 @@ class VariableConverter extends ConverterAbstract
 	        // Convert Object to dot
 	        $match = str_replace('->', '.', $match);
 
-	        $search  = str_replace($search, '{{ '.$match.' }}', $search);
-
-	       return $search;
+	       return str_replace($search, '{{ '.$match.' }}', $search);
 
    		},$content);
 
@@ -84,9 +82,8 @@ class VariableConverter extends ConverterAbstract
 
 		// Mixed with strings: {$test ? 'yes' : 'no'}
 		$pattern = '/\{\$(\w+)\s*\?\s*([\'"][^\'"]*[\'"])\s*:\s*([\'"][^\'"]*[\'"])\}/';
-		$content = preg_replace($pattern, '{{ $1 ? $2 : $3 }}', $content);
 
-		return $content;
+		return preg_replace($pattern, '{{ $1 ? $2 : $3 }}', $content);
 	}
 
 	/**
@@ -101,9 +98,8 @@ class VariableConverter extends ConverterAbstract
 
 		// With string default: {$var ?? 'default'}
 		$pattern = '/\{\$(\w+)\s*\?\?\s*([\'"][^\'"]*[\'"])\}/';
-		$content = preg_replace($pattern, '{{ $1 ?? $2 }}', $content);
 
-		return $content;
+		return preg_replace($pattern, '{{ $1 ?? $2 }}', $content);
 	}
 
 }

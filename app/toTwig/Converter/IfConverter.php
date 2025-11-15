@@ -18,7 +18,7 @@ use toTwig\ConverterAbstract;
  */
 class IfConverter extends ConverterAbstract
 {
-	private $alt = array(
+	private array $alt = [
 			'gt'  => '>',
 			'lt'  => '<',
 			'eq'  => '==',
@@ -28,7 +28,7 @@ class IfConverter extends ConverterAbstract
 			'mod' => '%',
 			'or'  => '||',
 			'and' => '&&'
-	);
+	];
 
 	public function convert(\SplFileInfo $file, $content)
 	{
@@ -44,17 +44,17 @@ class IfConverter extends ConverterAbstract
 		return $content;
 	}
 
-	public function getPriority()
+	public function getPriority(): int
 	{
 		return 50;
 	}
 
-	public function getName()
+	public function getName(): string
 	{
 		return 'if';
 	}
 
-	public function getDescription()
+	public function getDescription(): string
 	{
 		return 'Convert smarty if/else/elseif to twig';
 	}
@@ -79,15 +79,15 @@ class IfConverter extends ConverterAbstract
 	}
 
 
-	private function replace($pattern, $content, $string)
+	private function replace(string $pattern, $content, string $string)
 	{
-		return preg_replace_callback($pattern, function($matches) use ($string) {
+		return preg_replace_callback($pattern, function($matches) use ($string): string {
 
 				$match   = $matches[1];
 				$search  = $matches[0];
 
 				foreach ($this->alt as $key => $value) {
-					$match = str_replace(" $key ", " $value ", $match);
+					$match = str_replace(sprintf(' %s ', $key), sprintf(' %s ', $value), $match);
 				}
 
 				// Replace $vars
@@ -103,7 +103,7 @@ class IfConverter extends ConverterAbstract
 	private function replaceVariable($string)
 	{
 		$pattern = '/\$([\w\.\-\>\[\]]+)/';
-		return preg_replace_callback($pattern, function($matches) {
+		return preg_replace_callback($pattern, function($matches): string {
 			// Convert Object to dot
 	        $matches[1] = str_replace('->', '.',$matches[1]);
 

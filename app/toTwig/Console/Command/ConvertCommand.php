@@ -18,7 +18,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use toTwig\Converter;
-use toTwig\ConverterAbstract;
 use toTwig\Config\Config;
 use toTwig\ConfigInterface;
 
@@ -27,8 +26,9 @@ use toTwig\ConfigInterface;
  */
 class ConvertCommand extends Command
 {
-	protected $converter;
-	protected $defaultConfig;
+	protected Converter $converter;
+
+	protected ConfigInterface $defaultConfig;
 
 	/**
 	 * @param Converter           $converter
@@ -39,6 +39,7 @@ class ConvertCommand extends Command
 		$this->converter = $converter ?: new Converter();
 		$this->converter->registerBuiltInConverters();
 		$this->converter->registerBuiltInConfigs();
+
 		$this->defaultConfig = $config ?: new Config();
 
 		parent::__construct();
@@ -51,15 +52,15 @@ class ConvertCommand extends Command
 	{
 		$this
 			->setName('convert')
-			->setDefinition(array(
+			->setDefinition([
 				new InputArgument('path', InputArgument::REQUIRED, 'The path'),
-				new InputOption('config', '', InputOption::VALUE_REQUIRED, 'The configuration name', null),
+				new InputOption('config', '', InputOption::VALUE_REQUIRED, 'The configuration name'),
 				new InputOption('converters', '', InputOption::VALUE_REQUIRED, 'A list of converters to run'),
 				new InputOption('ext', '', InputOption::VALUE_REQUIRED, 'To output files with other extension'),
 				new InputOption('diff', '', InputOption::VALUE_NONE, 'Also produce diff for each file'),
 				new InputOption('dry-run', '', InputOption::VALUE_NONE, 'Only shows which files would have been modified'),
 				new InputOption('format', '', InputOption::VALUE_REQUIRED, 'To output results in other formats', 'txt')
-			))
+			])
 			->setDescription('Convert a directory or a file')
 			->setHelp(<<<EOF
 The <info>%command.name%</info> command tries to fix as much coding standards
@@ -156,7 +157,7 @@ EOF
 
 		if ($addSuppliedPathFromCli) {
 			if (is_file($path)) {
-				$config->finder(new \ArrayIterator(array(new \SplFileInfo($path))));
+				$config->finder(new \ArrayIterator([new \SplFileInfo($path)]));
 			} else {
 				$config->setDir($path);
 			}
@@ -167,7 +168,7 @@ EOF
 
 		$allConverters = $this->converter->getConverters();
 
-		$converters = array();
+		$converters = [];
 		// remove/add converters based on the converters option
 		if (preg_match('{(^|,)-}', $input->getOption('converters') ?? '')) {
 			foreach ($converters as $key => $converter) {
@@ -205,8 +206,10 @@ EOF
 							$output->writeln('<comment>      ---------- end diff ----------</comment>');
 						}
 					}
+
 					$output->writeln('');
 				}
+
 				break;
 			case 'xml':
 				$dom = new \DOMDocument('1.0', 'UTF-8');
@@ -241,7 +244,7 @@ EOF
 		return empty($changed) ? 0 : 1;
 	}
 
-	protected function getConvertersHelp()
+	protected function getConvertersHelp(): string
 	{
 		$converters = '';
 		$maxName = 0;
@@ -267,7 +270,7 @@ EOF
 		return $converters;
 	}
 
-	protected function getConfigsHelp()
+	protected function getConfigsHelp(): string
 	{
 		$configs = '';
 		$maxName = 0;

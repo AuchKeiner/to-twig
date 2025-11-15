@@ -12,7 +12,6 @@
 namespace sankar\ST\Tests\Converter;
 
 use sankar\ST\Converter;
-use sankar\ST\ConverterAbstract;
 use sankar\ST\Converter\IncludeConverter;
 
 /**
@@ -22,42 +21,43 @@ class IncludeConverterTest extends \PHPUnit_Framework_TestCase
 {
     protected $converter;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->converter = new IncludeConverter();
     }
+
     /**
      * @covers sankar\ST\Converter\IncludeConverter::convert
      * @dataProvider Provider
      */
-    public function testThatIncludeIsConverted($smarty,$twig)
+    public function testThatIncludeIsConverted($smarty,$twig): void
     {
 
         // Test the above cases
         $this->assertSame($twig,
             $this->converter->convert($this->getFileMock(), $smarty)
         );
-       
+
     }
 
     public function Provider()
     {
-        return array(
-                array( 
-                        "{include file='page_header.tpl'}"
+        return [
+                [
+                        "{include file='page_header.tpl'}",
                         "{% include 'page_header.tpl' %}"
-                    ),
-                array(
+                    ],
+                [
                         '{include file=\'footer.tpl\' foo=\'bar\' links=$links}',
-                        '{% include \'footer.tpl\' with {\'foo\' : \'bar\', links : links} %}'
-                    )
-            );
+                        "{% include 'footer.tpl' with {'foo' : 'bar', links : links} %}"
+                    ]
+            ];
     }
 
     /**
      * @covers sankar\ST\Converter\IncludeConverter::getName
      */
-    public function testThatHaveExpectedName()
+    public function testThatHaveExpectedName(): void
     {
         $this->assertEquals('include', $this->converter->getName());
     }
@@ -65,7 +65,7 @@ class IncludeConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers sankar\ST\Converter\IncludeConverter::getDescription
      */
-    public function testThatHaveDescription()
+    public function testThatHaveDescription(): void
     {
         $this->assertNotEmpty($this->converter->getDescription());
     }

@@ -76,21 +76,22 @@ abstract class ConverterAbstract
     protected function attributes( $string )
     {
         //Initialize variables
-        $attr       = array();
-        $retarray   = array();
+        $attr       = [];
+        $retarray   = [];
         $pattern    = '/(?:([\w:-]+)\s*=\s*)?(".*?"|\'.*?\'|(?:[$\w:-]+))/';
         // Lets grab all the key/value pairs using a regular expression
         preg_match_all( $pattern, $string, $attr );
         if (is_array($attr)) {
             $numPairs = count($attr[1]);
             for ($i = 0; $i < $numPairs; $i++) {
-               
+
                 $value = trim($attr[2][$i]);
-                $key   = ($attr[1][$i]) ? trim($attr[1][$i]) : trim(trim($value,'"'),"'");
+                $key   = ($attr[1][$i] !== '' && $attr[1][$i] !== '0') ? trim($attr[1][$i]) : trim(trim($value,'"'),"'");
 
                 $retarray[$key] = $value;
             }
         }
+
         return $retarray;
     }
 
@@ -100,7 +101,7 @@ abstract class ConverterAbstract
 	 */
 	protected function variable($string)
 	{
-		return str_replace(array('$','"',"'"),'',trim($string));
+		return str_replace(['$','"',"'"],'',trim($string));
 	}
 
 	/**
@@ -111,9 +112,8 @@ abstract class ConverterAbstract
 	{
 		$string = trim(trim($string),"'");
 		$string = ($string[0] == '$') ? ltrim($string,'$') : "'".str_replace("'", "\'", $string)."'";
-		$string = str_replace(array('"',"''"), "'", $string);
 
-		return $string;
+		return str_replace(['"',"''"], "'", $string);
 	}
 
 	/**
@@ -126,9 +126,6 @@ abstract class ConverterAbstract
 	protected function vsprintf($string, $args)
 	{
 		$pattern = '/:([a-zA-Z0-9_-]+)/';
-		return preg_replace_callback($pattern, function($matches) use ($args) {
-
-		    return str_replace($matches[0],$args[$matches[1]],$matches[0]);
-		}, $string);
+		return preg_replace_callback($pattern, fn($matches) => str_replace($matches[0],$args[$matches[1]],$matches[0]), $string);
 	}
 }
